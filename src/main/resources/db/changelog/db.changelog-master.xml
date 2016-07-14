@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="joshua">
+        <comment>
+            - Create table comment
+        </comment>
+        <sql>
+            DROP TABLE IF EXISTS comment;
+
+            CREATE TABLE comment (
+            id int not null auto_increment primary key,
+            comment_text text not null,
+            name text not null,
+            parent_id int,
+            FOREIGN KEY fk_comment(parent_id) REFERENCES comment(id),
+            created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+            );
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+
+
