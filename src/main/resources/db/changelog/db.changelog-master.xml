@@ -13,12 +13,17 @@
             DROP TABLE IF EXISTS comment;
 
             CREATE TABLE comment (
-            id int not null auto_increment primary key,
+            id bigint(20) unsigned not null auto_increment primary key,
             comment_text text not null,
             name text not null,
-            parent_id int,
+            parent_id bigint(20) unsigned,
+            city_name text,
+            latitude float,
+            longitude float,
+            temperature float,
             FOREIGN KEY fk_comment(parent_id) REFERENCES comment(id),
-            created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+            created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             );
 
         </sql>

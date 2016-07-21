@@ -1,0 +1,11 @@
+com/comments/web/LocationsController.class
+com/comments/domain/Comment.class
+com/comments/service/CommentServiceImpl.class
+com/comments/SimpleCORSFilter.class
+com/comments/service/LocationServiceImpl.class
+com/comments/service/CommentService.class
+com/comments/service/CommentRepository.class
+com/comments/web/CommentsController.class
+com/comments/CommentsAApplication.class
+com/comments/service/LocationService.class
+com/comments/domain/Location.class

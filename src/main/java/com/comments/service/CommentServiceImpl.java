@@ -1,14 +1,15 @@
 package com.comments.service;
 
 import com.comments.domain.Comment;
+import javassist.NotFoundException;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by joshua on 2016-07-11.
@@ -18,6 +19,13 @@ import java.util.Map;
 public class CommentServiceImpl implements CommentService{
 
     private CommentRepository commentRepository;
+
+    private LocationService locationService;
+
+    @Autowired
+    public void setLocationService(LocationService locationService) {
+        this.locationService = locationService;
+    }
 
     @Autowired
     public void setCommentRepository(CommentRepository commentRepository) {
@@ -34,28 +42,50 @@ public class CommentServiceImpl implements CommentService{
         return commentRepository.findAllUnique();
     }
 
-    public void saveComment(String name, String comment_text, Integer parent_id){
+    public Comment saveComment(String name, String comment_text, Integer parent_id, String cityName, Float latitude, Float longitude) throws NotFoundException {
         Comment comment = new Comment();
         comment.setName(name);
         comment.setCommentText(comment_text);
+        comment.setCityName(cityName);
+        comment.setCreated(Timestamp.from(Instant.now()));
+        comment.setUpdated(Timestamp.from(Instant.now()));
+        if (latitude!= null && longitude != null){
+            comment.setLatitude(latitude);
+            comment.setLongitude(longitude);
+            Float temperature = locationService.findTemperature(latitude, longitude);
+            comment.setTemperature(temperature);
+        }
         if (parent_id != null) {
-            System.out.println("ID: "+parent_id);
             Comment parent = findOne(parent_id);
-            comment.setParentComment(parent);
+            if (parent != null) {
+                comment.setParentComment(parent);
+            } else {
+                throw new NotFoundException("Parent comment not found");
+            }
 
         }
-        saveComment(comment);
+        return saveComment(comment);
     }
 
+    @Override
+    public Comment updateComment(int id, String commentText) throws NotFoundException {
+        Comment comment = findOne(id);
+        if (comment != null) {
+            comment.setCommentText(commentText);
+            comment.setCreated(Timestamp.from(Instant.now()));
+            return commentRepository.save(comment);
+        } else {
+            return null;
+        }
+    }
 
     @Override
-    public void saveComment(Comment comment) {
-        commentRepository.save(comment);
+    public Comment saveComment(Comment comment) {
+        return commentRepository.save(comment);
     }
 
     @Override
     public Comment findOne(int id) {
-        System.out.println("ID: "+id);
         return commentRepository.findOne(id);
     }
 

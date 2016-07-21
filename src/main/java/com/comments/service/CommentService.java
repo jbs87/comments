@@ -1,6 +1,7 @@
 package com.comments.service;
 
 import com.comments.domain.Comment;
+import javassist.NotFoundException;
 
 import java.util.List;
 
@@ -10,8 +11,9 @@ import java.util.List;
 public interface CommentService {
     public List<Comment> findAll();
     public List<Comment> findAllUnique();
-    public void saveComment(Comment comment);
+    public Comment saveComment(Comment comment) throws NotFoundException;
+    public Comment updateComment(int id, String commentText) throws NotFoundException;
     public Comment findOne(int id);
     public void delete(int id);
-    public void saveComment(String name, String comment_text, Integer parent_id);
+    public Comment saveComment(String name, String comment_text, Integer parent_id, String cityName, Float latitude, Float longitude) throws NotFoundException;
 }

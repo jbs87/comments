@@ -1,0 +1,4 @@
+com/comments/CommentsAApplicationTests.class
+com/comments/config/CommentControllerConfig.class
+com/comments/service/CommentServiceTest.class
+com/comments/controller/CommentControllerTest.class

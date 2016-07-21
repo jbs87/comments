@@ -15,6 +15,6 @@ import java.util.List;
 @Component
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-    @Query(value = "SELECT c FROM comment c WHERE c.parentComment is null")
+    @Query(value = "SELECT c FROM comment c WHERE c.parentComment is null order by c.created DESC ")
     List<Comment> findAllUnique();
 }

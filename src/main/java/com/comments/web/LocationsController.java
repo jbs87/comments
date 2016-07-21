@@ -1,13 +1,12 @@
 package com.comments.web;
 
 import com.comments.domain.Comment;
+import com.comments.domain.Location;
 import com.comments.service.CommentService;
 import com.comments.service.LocationService;
+import org.geonames.Toponym;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,9 +25,10 @@ public class LocationsController {
         this.locationService = locationService;
     }
 
-    @RequestMapping(value = "/check/{location}")
-    public List<String> checkLocation(@PathVariable String location) {
-        return locationService.findLocation(location);
+    @CrossOrigin(origins = "http://localhost:8000")
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    public List<Location> checkLocation(@RequestParam String placeName) {
+        return locationService.findLocation(placeName);
     }
 
     @RequestMapping(value = "/temperature/{latitude}/{longitude}")
