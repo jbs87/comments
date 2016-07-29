@@ -34,17 +34,18 @@ public class CommentsController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
-    public Comment updateComment(@RequestParam(required = false) Integer id, @RequestParam String commentText) throws NotFoundException {
+    public Comment updateComment(@RequestParam Integer id, @RequestParam String commentText) throws NotFoundException {
         Comment comment = commentService.updateComment(id, commentText);
         if (comment == null) { throw new NotFoundException("Comment not found");}
         return comment;
     }
 
 
-    @RequestMapping(value = "/all")
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Comment> getCommentsUnique() {
-        return commentService.findAllUnique();
+    public List<Comment> getCommentsUnique(@RequestParam String sortOrder) {
+        System.out.println("SortOrder: "+sortOrder);
+        return commentService.findAllUnique(sortOrder);
     }
 
 }

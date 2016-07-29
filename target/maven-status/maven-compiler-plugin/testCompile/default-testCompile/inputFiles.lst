@@ -1,4 +1,4 @@
-/Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/service/CommentServiceTest.java
 /Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/config/CommentControllerConfig.java
 /Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/CommentsAApplicationTests.java
-/Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/controller/CommentControllerTest.java
+/Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/service/CommentServiceIT.java
+/Users/joshua/IdeaProjects/CommentsA/src/test/java/com/comments/controller/CommentControllerIT.java

@@ -45,13 +45,7 @@ public class CommentServiceIT {
     public void saveCompleteCommentNoParentTest() throws NotFoundException {
         Mockito.when(locationService.findTemperature((float) 23.44, (float) 45.66)).thenReturn((float) 85.00);
         Comment comment = commentService.saveComment("Joshua", "Hello world", null, "Toronto", (float) 23.44, (float) 45.66);
-        assertThat(comment.getName(), is("Joshua"));
-        assertThat(comment.getCommentText(), is("Hello world"));
-        assertThat(comment.getParentComment(), is(nullValue()));
-        assertThat(comment.getCityName(), is("Toronto"));
-        assertThat(comment.getTemperature(), is((float) 85.00));
-        assertThat(comment.getLatitude(), is((float) 23.44));
-        assertThat(comment.getLongitude(), is((float) 45.66));
+        checkSavedComment(comment.getId(), "Joshua", "Hello world", null, "Toronto", (float) 85.00, (float) 23.44, (float) 45.66);
     }
 
     @Test
@@ -59,25 +53,37 @@ public class CommentServiceIT {
         Mockito.when(locationService.findTemperature((float) 23.44, (float) 45.66)).thenReturn((float) 85.00);
         Comment parentComment = commentService.saveComment("Joshua", "Hello world", null, "Toronto", (float) 23.44, (float) 45.66);
         Comment comment = commentService.saveComment("Joshua", "Hello world", parentComment.getId(), "Toronto", (float) 23.44, (float) 45.66);
-        assertThat(comment.getName(), is("Joshua"));
-        assertThat(comment.getCommentText(), is("Hello world"));
-        assertThat(comment.getParentComment().getId(), is(parentComment.getId()));
-        assertThat(comment.getCityName(), is("Toronto"));
-        assertThat(comment.getTemperature(), is((float) 85.00));
-        assertThat(comment.getLatitude(), is((float) 23.44));
-        assertThat(comment.getLongitude(), is((float) 45.66));
+        checkSavedComment(comment.getId(), "Joshua", "Hello world", parentComment.getId(), "Toronto", (float) 85.00, (float) 23.44, (float) 45.66);
+
+    }
+
+    @Test
+    public void updateCommentTest() throws NotFoundException {
+        Mockito.when(locationService.findTemperature((float) 23.44, (float) 45.66)).thenReturn((float) 85.00);
+        Comment parentComment = commentService.saveComment("Joshua", "Hello world", null, "Toronto", (float) 23.44, (float) 45.66);
+        Comment comment = commentService.saveComment("Joshua", "Hello world", parentComment.getId(), "Toronto", (float) 23.44, (float) 45.66);
+        commentService.updateComment(comment.getId(), "Hello world modified");
+        checkSavedComment(comment.getId(), "Joshua", "Hello world modified", parentComment.getId(), "Toronto", (float) 85.00, (float) 23.44, (float) 45.66);
+
     }
 
     @Test
     public void saveCommentNoLocationTest() throws NotFoundException {
         Mockito.when(locationService.findTemperature((float) 23.44, (float) 45.66)).thenReturn((float) 85.00);
         Comment comment = commentService.saveComment("Joshua", "Hello world", null, null, null, null);
-        assertThat(comment.getName(), is("Joshua"));
-        assertThat(comment.getCommentText(), is("Hello world"));
-        assertThat(comment.getParentComment(), is(nullValue()));
-        assertThat(comment.getCityName(), is(nullValue()));
-        assertThat(comment.getTemperature(), is(nullValue()));
-        assertThat(comment.getLatitude(), is(nullValue()));
-        assertThat(comment.getLongitude(), is(nullValue()));
+        checkSavedComment(comment.getId(), "Joshua", "Hello world", null, null, null, null, null);
+    }
+
+    private void checkSavedComment(Integer commentId, String name, String commentText, Integer parentCommentId, String cityName, Float temperature, Float latitude, Float longitude){
+        Comment comment = commentService.findOne(commentId);
+        assertThat(comment.getName(), is(name));
+        assertThat(comment.getCommentText(), is(commentText));
+        if (comment.getParentComment() != null) {
+            assertThat(comment.getParentComment().getId(), is(parentCommentId));
+        }
+        assertThat(comment.getCityName(), is(cityName));
+        assertThat(comment.getTemperature(), is(temperature));
+        assertThat(comment.getLatitude(), is(latitude));
+        assertThat(comment.getLongitude(), is(longitude));
     }
 }

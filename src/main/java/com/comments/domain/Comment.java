@@ -155,4 +155,21 @@ public class Comment implements Serializable{
     public void setUpdated(Timestamp updated) {
         this.updated = updated;
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", commentText='" + commentText + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", temperature=" + temperature +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", parentComment=" + parentComment +
+                ", commentReplies=" + commentReplies +
+                '}';
+    }
 }

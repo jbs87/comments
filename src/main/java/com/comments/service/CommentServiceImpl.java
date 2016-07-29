@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -38,8 +40,16 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public List<Comment> findAllUnique() {
-        return commentRepository.findAllUnique();
+    public List<Comment> findAllUnique(String sortOrder) {
+        List<Comment> comments = commentRepository.findAllUnique();
+        if (sortOrder.equals("ascending")){
+            Collections.sort(comments, new Comparator<Comment>() {
+                public int compare(Comment o1, Comment o2) {
+                    return o1.getUpdated().compareTo(o2.getUpdated());
+                }
+            });
+        }
+        return comments;
     }
 
     public Comment saveComment(String name, String comment_text, Integer parent_id, String cityName, Float latitude, Float longitude) throws NotFoundException {

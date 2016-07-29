@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface CommentService {
     public List<Comment> findAll();
-    public List<Comment> findAllUnique();
+    public List<Comment> findAllUnique(String sortOrder);
     public Comment saveComment(Comment comment) throws NotFoundException;
     public Comment updateComment(int id, String commentText) throws NotFoundException;
     public Comment findOne(int id);

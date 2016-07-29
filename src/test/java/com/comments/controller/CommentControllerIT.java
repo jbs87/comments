@@ -93,41 +93,23 @@ public class CommentControllerIT {
         populateComments();
         Comment[] comments = given().when().get("/comments/all").as(Comment[].class);
         List<Comment> commentList = new ArrayList<Comment>(Arrays.asList(comments));
-        assertThat(commentList.get(0).getName(), is("Jack"));
-        assertThat(commentList.get(0).getCityName(), is("Toronto"));
-        assertThat(commentList.get(0).getTemperature(), is((float) 85.00));
-        assertThat(commentList.get(0).getCommentReplies().get(0).getName(), is("Jill"));
-        assertThat(commentList.get(0).getCommentReplies().get(0).getCommentText(), is("First comment reply"));
-        assertThat(commentList.get(0).getCommentReplies().get(0).getCityName(), is("LA"));
-        assertThat(commentList.get(0).getCommentReplies().get(0).getTemperature(), is((float) 85.00));
-        assertThat(commentList.get(1).getName(), is("John"));
-        assertThat(commentList.get(1).getCityName(), is("Detroit"));
-        assertThat(commentList.get(1).getCommentText(), is("Second comment"));
-        assertThat(commentList.get(1).getTemperature(), is((float) 85.00));
+        checkSavedComment(commentList.get(0).getId(), "Jack", "First comment", null, "Toronto", (float) 23.23, (float) 90.00, (float) 85.00);
+        checkSavedComment(commentList.get(0).getCommentReplies().get(0).getId(), "Jill", "First comment reply", commentList.get(0).getId(), "LA", (float) 23.23, (float) 90.00, (float) 85.00);
+        checkSavedComment(commentList.get(1).getId(), "John", "Second comment", null, "Detroit", (float) 23.23, (float) 90.00, (float) 85.00);
     }
 
     @Test
     public void saveComments() throws Exception {
         Mockito.when(locationService.findTemperature((float) 23.44, (float) 90.00)).thenReturn((float) 85.00);
         Comment commentA = given().param("name","Joshua").param("commentText","First post").when().post("/comments/add").as(Comment.class);
-        commentA = commentRepository.findOne(commentA.getId());
-        assertThat(commentA.getName(), is("Joshua"));
-        assertThat(commentA.getCommentText(), is("First post"));
+        checkSavedComment(commentA.getId(), "Joshua", "First post", null, null, null, null, null);
         Comment commentB = given().param("name","Jack").param("commentText","First post reply").param("parentId", commentA.getId()).when().post("/comments/add").as(Comment.class);
-        commentB = commentRepository.findOne(commentB.getId());
-        assertThat(commentB.getName(), is("Jack"));
-        assertThat(commentB.getCommentText(), is("First post reply"));
-        assertThat(commentB.getParentComment().getId(), is(commentA.getId()));
-        Comment commentC = given().param("name","Jack").param("commentText","First post reply2").param("parentId", commentA.getId()).when().post("/comments/add").as(Comment.class);
-        commentC = commentRepository.findOne(commentC.getId());
-        assertThat(commentC.getName(), is("Jack"));
-        assertThat(commentC.getCommentText(), is("First post reply2"));
-        assertThat(commentC.getParentComment().getId(), is(commentA.getId()));
+        checkSavedComment(commentB.getId(), "Jack", "First post reply", commentA.getId(), null, null, null, null);
+        Comment commentC = given().param("name","Jill").param("commentText","First post reply 2").param("parentId", commentA.getId()).when().post("/comments/add").as(Comment.class);
+        checkSavedComment(commentC.getId(), "Jill", "First post reply 2", commentA.getId(), null, null, null, null);
         Comment commentD = given().param("name","John").param("commentText","Second post").param("cityName", "Toronto").param("latitude", (float)23.44).param("longitude", (float) 34).when().post("/comments/add").as(Comment.class);
-        commentD = commentRepository.findOne(commentD.getId());
-        assertThat(commentD.getName(), is("John"));
-        assertThat(commentD.getCommentText(), is("Second post"));
-        assertThat(commentD.getParentComment(), is(nullValue()));
+        checkSavedComment(commentD.getId(), "John", "Second post", null, "Toronto", (float)23.44, (float) 34, (float) 85.00);
+
     }
 
     @Test
@@ -157,7 +139,6 @@ public class CommentControllerIT {
 
     @Test
     public void updateCommentNotFound() throws NotFoundException{
-        RestAssured.useRelaxedHTTPSValidation();
         Mockito.when(locationService.findTemperature((float) 23.44, (float) 90.00)).thenReturn((float) 85.00);
         Comment commentA = given().param("name","Joshua").param("commentText","First post").when().post("/comments/add").as(Comment.class);
         assertThat(commentA.getCreated().equals(commentA.getUpdated()), is(true));
@@ -175,6 +156,19 @@ public class CommentControllerIT {
         Comment commentB = commentService.saveComment("Jill","First comment reply", commentA.getId(), "LA", (float) 23.23, (float) 90.00);
         Comment commentC = commentService.saveComment("Jack","First comment reply reply", commentB.getId(), "NYC", (float) 23.23, (float) 90.00);
         Comment commentD = commentService.saveComment("John","Second comment", null, "Detroit", (float) 23.23, (float) 90.00);
+    }
+
+    private void checkSavedComment(Integer commentId, String name, String commentText, Integer parentId, String cityName, Float latitude, Float longitude, Float temperature){
+        Comment comment = commentRepository.findOne(commentId);
+        assertThat(comment.getName(), is(name));
+        assertThat(comment.getCommentText(), is(commentText));
+        assertThat(comment.getCityName(), is(cityName));
+        assertThat(comment.getLatitude(), is(latitude));
+        assertThat(comment.getLongitude(), is(longitude));
+        assertThat(comment.getTemperature(), is(temperature));
+        if (comment.getParentComment() != null) {
+            assertThat(comment.getParentComment().getId(), is(parentId));
+        }
     }
 
 
