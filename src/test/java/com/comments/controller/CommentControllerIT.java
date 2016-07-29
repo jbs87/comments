@@ -91,7 +91,7 @@ public class CommentControllerIT {
     @Test
     public void canFetchAll() throws Exception {
         populateComments();
-        Comment[] comments = given().when().get("/comments/all").as(Comment[].class);
+        Comment[] comments = given().param("sortOrder","ascending").when().get("/comments/all").as(Comment[].class);
         List<Comment> commentList = new ArrayList<Comment>(Arrays.asList(comments));
         checkSavedComment(commentList.get(0).getId(), "Jack", "First comment", null, "Toronto", (float) 23.23, (float) 90.00, (float) 85.00);
         checkSavedComment(commentList.get(0).getCommentReplies().get(0).getId(), "Jill", "First comment reply", commentList.get(0).getId(), "LA", (float) 23.23, (float) 90.00, (float) 85.00);
@@ -107,8 +107,8 @@ public class CommentControllerIT {
         checkSavedComment(commentB.getId(), "Jack", "First post reply", commentA.getId(), null, null, null, null);
         Comment commentC = given().param("name","Jill").param("commentText","First post reply 2").param("parentId", commentA.getId()).when().post("/comments/add").as(Comment.class);
         checkSavedComment(commentC.getId(), "Jill", "First post reply 2", commentA.getId(), null, null, null, null);
-        Comment commentD = given().param("name","John").param("commentText","Second post").param("cityName", "Toronto").param("latitude", (float)23.44).param("longitude", (float) 34).when().post("/comments/add").as(Comment.class);
-        checkSavedComment(commentD.getId(), "John", "Second post", null, "Toronto", (float)23.44, (float) 34, (float) 85.00);
+        Comment commentD = given().param("name","John").param("commentText","Second post").param("cityName", "Toronto").param("latitude", (float)23.44).param("longitude", (float) 90.00).when().post("/comments/add").as(Comment.class);
+        checkSavedComment(commentD.getId(), "John", "Second post", null, "Toronto", (float)23.44, (float) 90.00, (float) 85.00);
 
     }
 

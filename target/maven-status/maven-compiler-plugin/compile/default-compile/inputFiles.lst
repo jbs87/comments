@@ -2,6 +2,7 @@
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/SimpleCORSFilter.java
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/service/CommentServiceImpl.java
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/service/CommentService.java
+/Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/SwaggerConfig.java
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/service/CommentRepository.java
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/service/LocationServiceImpl.java
 /Users/joshua/IdeaProjects/CommentsA/src/main/java/com/comments/domain/Location.java

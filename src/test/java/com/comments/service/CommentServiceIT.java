@@ -7,11 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper;
 
 import static io.restassured.path.json.JsonPath.from;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +27,8 @@ import static org.hamcrest.core.Is.is;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = CommentsAApplication.class)
-@IntegrationTest
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
 public class CommentServiceIT {
 
     private CommentService commentService;
